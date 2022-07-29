@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
+import useFetchPokemons from "../hooks/useFetchPokemons";
 
 export const ViewOne = () => {
-  const [pokemons, setPokemons] = useState([]);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { pokemons, error, isLoading, useFetchPokemons } = useFetchPokemons();
   useEffect(() => {
-    const fetchPokemon = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("https://pokemon.api.co/api/v2/pokemon");
-        const data = await response.json();
-        setPokemons(data.results);
-      } catch (error) {
-        console.log(error);
-        setPokemons([]);
-        setError(new Error("Error en pokemon api"));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPokemon();
+    fetchPokemons();
   }, []);
+
+  return (
+    <div>
+      <h1>View One</h1>
+      {isLoading && <p>Cargando...</p>}
+      {!isLoading &&
+        pokemons?.map((pokemon) => {
+          return (
+            <div key={pokemon.name}>
+              <p>{pokemon.name}</p>
+            </div>
+          );
+        })}
+      {error && <p>Something went wrong</p>}
+    </div>
+  );
 };
+
+export default ViewOne;
